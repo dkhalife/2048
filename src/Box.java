@@ -42,8 +42,14 @@ public class Box extends JLabel {
     public void setValue(int i){
         int l = (int) Math.log(i) + 1;
         
-        setText(i + "");
+        setText(i == 0 ? "" : String.valueOf(i));
         setForeground(l < 3 ? new Color(119, 110, 101) : new Color(249, 246, 242));
         setBackground(COLORS[Math.min(Math.max(l, 0), 11)]);
+    }
+    
+    public int getValue(){
+        String t = getText();
+        
+        return t.isEmpty() ? 0 : Integer.parseInt(t);
     }
 }
