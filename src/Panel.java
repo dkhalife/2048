@@ -187,11 +187,53 @@ public class Panel extends javax.swing.JFrame {
     }
     
     private void moveLeft(){
-
+        int u, v;
+        boolean moved = false;
+        
+        for(int i=0; i<GRID_SIZE; ++i){
+            for(int j=1; j<GRID_SIZE; ++j){
+                u = grid[i][j-1].getValue();
+                v = grid[i][j].getValue();
+                
+                if(u == 0){
+                    grid[i][j-1].setValue(v);
+                    grid[i][j].setValue(0);
+                    moved = true;
+                }
+                else if(v == u){
+                    grid[i][j-1].setValue(v * 2);
+                    grid[i][j].setValue(0);
+                    moved = true;
+                }
+            }
+        }
+        
+        update(moved);
     }
     
     private void moveRight(){
-
+        int u, v;
+        boolean moved = false;
+        
+        for(int i=0; i<GRID_SIZE; ++i){
+            for(int j=GRID_SIZE-1; j>0; --j){
+                u = grid[i][j].getValue();
+                v = grid[i][j-1].getValue();
+                
+                if(u == 0){
+                    grid[i][j].setValue(v);
+                    grid[i][j-1].setValue(0);
+                    moved = true;
+                }
+                else if(v == u){
+                    grid[i][j].setValue(v * 2);
+                    grid[i][j-1].setValue(0);
+                    moved = true;
+                }
+            }
+        }
+        
+        update(moved);
     }
     
     private void gameOver(){
