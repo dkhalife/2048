@@ -54,8 +54,11 @@ public class Panel extends javax.swing.JFrame {
         }
         
         random = new Random(System.nanoTime());
-        generate();
-        generate();
+        //generate();
+        //generate();
+        for(int i=0; i<4; ++i)
+        for(int j=0; j<4; ++j)
+            grid[i][j].setValue(2);
         
         addKeyListener(new KeyAdapter() {
             @Override
@@ -140,20 +143,27 @@ public class Panel extends javax.swing.JFrame {
         int u, v;
         boolean moved = false;
         
-        for(int i=1; i<GRID_SIZE; ++i){
-            for(int j=0; j<GRID_SIZE; ++j){
-                u = grid[i-1][j].getValue();
-                v = grid[i][j].getValue();
-                
-                if(u == 0){
-                    grid[i-1][j].setValue(v);
-                    grid[i][j].setValue(0);
-                    moved = true;
-                }
-                else if(v == u){
-                    grid[i-1][j].setValue(v * 2);
-                    grid[i][j].setValue(0);
-                    moved = true;
+        for(int j=0; j<GRID_SIZE; ++j){
+            for(int i=1; i<GRID_SIZE; ++i){
+                for(int p=i; p>0; --p){
+                    u = grid[p-1][j].getValue();
+                    v = grid[p][j].getValue();
+
+                    if(v == 0)
+                        break;
+
+                    // Keep pushing up until merge or no match
+                    if(u == 0){
+                        grid[p-1][j].setValue(v);
+                        grid[p][j].setValue(0);
+                        moved = true;
+                    }
+                    else if(u == v){
+                        grid[p-1][j].setValue(u + u);
+                        grid[p][j].setValue(0);
+                        moved = true;                        
+                        break;
+                    }
                 }
             }
         }
@@ -165,20 +175,27 @@ public class Panel extends javax.swing.JFrame {
         int u, v;
         boolean moved = false;
         
-        for(int i=GRID_SIZE-1; i>0; --i){
-            for(int j=0; j<GRID_SIZE; ++j){
-                u = grid[i][j].getValue();
-                v = grid[i-1][j].getValue();
-                
-                if(u == 0){
-                    grid[i][j].setValue(v);
-                    grid[i-1][j].setValue(0);
-                    moved = true;
-                }
-                else if(v == u){
-                    grid[i][j].setValue(v * 2);
-                    grid[i-1][j].setValue(0);
-                    moved = true;
+        for(int j=0; j<GRID_SIZE; ++j){
+            for(int i=GRID_SIZE-1; i>=0; --i){
+                for(int p=i; p<GRID_SIZE-1; ++p){
+                    u = grid[p+1][j].getValue();
+                    v = grid[p][j].getValue();
+
+                    if(v == 0)
+                        break;
+
+                    // Keep pushing up until merge or no match
+                    if(u == 0){
+                        grid[p+1][j].setValue(v);
+                        grid[p][j].setValue(0);
+                        moved = true;
+                    }
+                    else if(u == v){
+                        grid[p+1][j].setValue(u + u);
+                        grid[p][j].setValue(0);
+                        moved = true;                        
+                        break;
+                    }
                 }
             }
         }
@@ -192,18 +209,25 @@ public class Panel extends javax.swing.JFrame {
         
         for(int i=0; i<GRID_SIZE; ++i){
             for(int j=1; j<GRID_SIZE; ++j){
-                u = grid[i][j-1].getValue();
-                v = grid[i][j].getValue();
-                
-                if(u == 0){
-                    grid[i][j-1].setValue(v);
-                    grid[i][j].setValue(0);
-                    moved = true;
-                }
-                else if(v == u){
-                    grid[i][j-1].setValue(v * 2);
-                    grid[i][j].setValue(0);
-                    moved = true;
+                for(int p=j; p>0; --p){
+                    u = grid[i][p-1].getValue();
+                    v = grid[i][p].getValue();
+
+                    if(v == 0)
+                        break;
+
+                    // Keep pushing up until merge or no match
+                    if(u == 0){
+                        grid[i][p-1].setValue(v);
+                        grid[i][p].setValue(0);
+                        moved = true;
+                    }
+                    else if(u == v){
+                        grid[i][p-1].setValue(u + u);
+                        grid[i][p].setValue(0);
+                        moved = true;                        
+                        break;
+                    }
                 }
             }
         }
@@ -216,19 +240,26 @@ public class Panel extends javax.swing.JFrame {
         boolean moved = false;
         
         for(int i=0; i<GRID_SIZE; ++i){
-            for(int j=GRID_SIZE-1; j>0; --j){
-                u = grid[i][j].getValue();
-                v = grid[i][j-1].getValue();
-                
-                if(u == 0){
-                    grid[i][j].setValue(v);
-                    grid[i][j-1].setValue(0);
-                    moved = true;
-                }
-                else if(v == u){
-                    grid[i][j].setValue(v * 2);
-                    grid[i][j-1].setValue(0);
-                    moved = true;
+            for(int j=GRID_SIZE-1; j>=0; --j){
+                for(int p=j; p<GRID_SIZE-1; ++p){
+                    u = grid[i][p+1].getValue();
+                    v = grid[i][p].getValue();
+
+                    if(v == 0)
+                        break;
+
+                    // Keep pushing up until merge or no match
+                    if(u == 0){
+                        grid[i][p+1].setValue(v);
+                        grid[i][p].setValue(0);
+                        moved = true;
+                    }
+                    else if(u == v){
+                        grid[i][p+1].setValue(u + u);
+                        grid[i][p].setValue(0);
+                        moved = true;                        
+                        break;
+                    }
                 }
             }
         }
