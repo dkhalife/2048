@@ -1,6 +1,8 @@
 
 import java.awt.Color;
 import java.awt.Font;
+import java.io.InvalidObjectException;
+import java.util.ArrayList;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
@@ -28,8 +30,18 @@ public class Box extends JLabel {
         new Color(237, 197, 63), 
         new Color(237, 194, 46) 
     };
-    
     private static Font font = new Font("Verdana", Font.BOLD, 28);
+    private static ArrayList<Box> marked = new ArrayList<Box>();;
+    
+    private boolean mark = false;
+    
+    public static void clearMarks(){
+        for(Box b : marked){
+            b.clearMark();
+        }
+        
+        marked.clear();
+    }
     
     public Box(){
         setOpaque(true);
@@ -39,7 +51,11 @@ public class Box extends JLabel {
         setBackground(new Color(204, 192, 179));
     }
     
-    public void setValue(int i){
+    public void setValue(int i) throws InvalidObjectException {
+        if(mark){
+            throw new InvalidObjectException("Tried to modify a marked cell");
+        }
+        
         int l = (int) Math.log(i) + 1;
         
         setText(i == 0 ? "" : String.valueOf(i));
@@ -51,5 +67,22 @@ public class Box extends JLabel {
         String t = getText();
         
         return t.isEmpty() ? 0 : Integer.parseInt(t);
+    }
+    
+    public void setMark() throws InvalidObjectException{
+        if(mark){
+            throw new InvalidObjectException("Tried to mark a previously marked cell");
+        }
+        
+        mark = true;
+        marked.add(this);
+    }
+    
+    public void clearMark(){
+        mark = false;
+    }
+    
+    public boolean isMarked(){
+        return mark;
     }
 }

@@ -3,9 +3,11 @@ import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.sql.Time;
+import java.io.InvalidObjectException;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
@@ -29,7 +31,7 @@ public class Panel extends javax.swing.JFrame {
     private ArrayList<Box> empty;
     private Random random;
     
-    public Panel() {
+    public Panel() throws InvalidObjectException {
         grid = new Box[GRID_SIZE][GRID_SIZE];
         empty =  new ArrayList<Box>(GRID_SIZE * GRID_SIZE);
         initComponents();
@@ -56,26 +58,32 @@ public class Panel extends javax.swing.JFrame {
         random = new Random(System.nanoTime());
         //generate();
         //generate();
-        for(int i=0; i<4; ++i)
-        for(int j=0; j<4; ++j)
-            grid[i][j].setValue(2);
+        
+        grid[0][0].setValue(8);
+        grid[0][1].setValue(4);
+        grid[0][2].setValue(4);
+        grid[0][3].setValue(2);
         
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent ke) {
                 int key = ke.getKeyCode();
                 
-                if(key == KeyEvent.VK_RIGHT){
-                    moveRight();
-                }
-                else if(key == KeyEvent.VK_LEFT){
-                    moveLeft();
-                }
-                else if(key == KeyEvent.VK_UP){
-                    moveUp();
-                }
-                else if(key == KeyEvent.VK_DOWN){
-                    moveDown();
+                try {
+                    if(key == KeyEvent.VK_RIGHT){
+                        moveRight();
+                    }
+                    else if(key == KeyEvent.VK_LEFT){
+                        moveLeft();
+                    }
+                    else if(key == KeyEvent.VK_UP){
+                        moveUp();
+                    }
+                    else if(key == KeyEvent.VK_DOWN){
+                        moveDown();
+                    }
+                } catch (InvalidObjectException ex) {
+                    Logger.getLogger(Panel.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
@@ -83,7 +91,7 @@ public class Panel extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }
 
-    private void generate(){
+    private void generate() throws InvalidObjectException{
         Box b = empty.remove(random.nextInt(empty.size()));
         b.setValue(2);
     }
@@ -120,7 +128,7 @@ public class Panel extends javax.swing.JFrame {
         return false;
     }
     
-    private void update(boolean moved){
+    private void update(boolean moved) throws InvalidObjectException{
         if(!moved)
             return;
         
@@ -133,13 +141,15 @@ public class Panel extends javax.swing.JFrame {
             }
         }
         
+        Box.clearMarks();
+        
         generate();
             
         if(!canMove())
             gameOver();
     }
     
-    private void moveUp(){
+    private void moveUp() throws InvalidObjectException{
         int u, v;
         boolean moved = false;
         
@@ -158,12 +168,16 @@ public class Panel extends javax.swing.JFrame {
                         grid[p][j].setValue(0);
                         moved = true;
                     }
-                    else if(u == v){
+                    else if(u == v && !grid[p-1][j].isMarked()){
                         grid[p-1][j].setValue(u + u);
+                        grid[p-1][j].setMark();
                         grid[p][j].setValue(0);
                         moved = true;                        
                         break;
                     }
+                    
+                    if(!moved)
+                        break;
                 }
             }
         }
@@ -171,7 +185,7 @@ public class Panel extends javax.swing.JFrame {
         update(moved);
     }
     
-    private void moveDown(){
+    private void moveDown() throws InvalidObjectException{
         int u, v;
         boolean moved = false;
         
@@ -190,12 +204,16 @@ public class Panel extends javax.swing.JFrame {
                         grid[p][j].setValue(0);
                         moved = true;
                     }
-                    else if(u == v){
+                    else if(u == v && !grid[p+1][j].isMarked()){
                         grid[p+1][j].setValue(u + u);
+                        grid[p+1][j].setMark();
                         grid[p][j].setValue(0);
                         moved = true;                        
                         break;
                     }
+                    
+                    if(!moved)
+                        break;
                 }
             }
         }
@@ -203,7 +221,7 @@ public class Panel extends javax.swing.JFrame {
         update(moved);
     }
     
-    private void moveLeft(){
+    private void moveLeft() throws InvalidObjectException{
         int u, v;
         boolean moved = false;
         
@@ -222,12 +240,16 @@ public class Panel extends javax.swing.JFrame {
                         grid[i][p].setValue(0);
                         moved = true;
                     }
-                    else if(u == v){
+                    else if(u == v && !grid[i][p-1].isMarked()){
                         grid[i][p-1].setValue(u + u);
+                        grid[i][p-1].setMark();
                         grid[i][p].setValue(0);
                         moved = true;                        
                         break;
                     }
+                    
+                    if(!moved)
+                        break;
                 }
             }
         }
@@ -235,7 +257,7 @@ public class Panel extends javax.swing.JFrame {
         update(moved);
     }
     
-    private void moveRight(){
+    private void moveRight() throws InvalidObjectException{
         int u, v;
         boolean moved = false;
         
@@ -254,12 +276,16 @@ public class Panel extends javax.swing.JFrame {
                         grid[i][p].setValue(0);
                         moved = true;
                     }
-                    else if(u == v){
+                    else if(u == v && !grid[i][p+1].isMarked()){
                         grid[i][p+1].setValue(u + u);
+                        grid[i][p+1].setMark();
                         grid[i][p].setValue(0);
                         moved = true;                        
                         break;
                     }
+                    
+                    if(!moved)
+                        break;
                 }
             }
         }
@@ -296,7 +322,11 @@ public class Panel extends javax.swing.JFrame {
 
             @Override
             public void run() {
-                new Panel().setVisible(true);
+                try {
+                    new Panel().setVisible(true);
+                } catch (InvalidObjectException ex) {
+                    Logger.getLogger(Panel.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
