@@ -56,13 +56,8 @@ public class Panel extends javax.swing.JFrame {
         }
         
         random = new Random(System.nanoTime());
-        //generate();
-        //generate();
-        
-        grid[0][0].setValue(8);
-        grid[0][1].setValue(4);
-        grid[0][2].setValue(4);
-        grid[0][3].setValue(2);
+        generate();
+        generate();
         
         addKeyListener(new KeyAdapter() {
             @Override
@@ -175,9 +170,9 @@ public class Panel extends javax.swing.JFrame {
                         moved = true;                        
                         break;
                     }
-                    
-                    if(!moved)
+                    else {
                         break;
+                    }
                 }
             }
         }
@@ -211,9 +206,9 @@ public class Panel extends javax.swing.JFrame {
                         moved = true;                        
                         break;
                     }
-                    
-                    if(!moved)
+                    else {
                         break;
+                    }
                 }
             }
         }
@@ -247,9 +242,9 @@ public class Panel extends javax.swing.JFrame {
                         moved = true;                        
                         break;
                     }
-                    
-                    if(!moved)
+                    else {
                         break;
+                    }
                 }
             }
         }
@@ -283,9 +278,9 @@ public class Panel extends javax.swing.JFrame {
                         moved = true;                        
                         break;
                     }
-                    
-                    if(!moved)
+                    else {
                         break;
+                    }
                 }
             }
         }
