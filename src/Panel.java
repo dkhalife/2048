@@ -46,6 +46,8 @@ public class Panel extends javax.swing.JFrame {
         l.setVgap(10);
         setSize(600, 600);
         
+        setTitle("2048");
+        
         for(int i=0; i<4; ++i){
             for(int j=0; j<4; ++j){
                 Box b = new Box();
